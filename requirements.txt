@@ -1,0 +1,21 @@
+# Веб-сервер и API
+fastapi
+uvicorn[standard]
+
+# Telegram-бот (асинхронный v3)
+aiogram>=3.0.0
+
+# Хранилище S3 (Cloudflare R2)
+boto3
+python-multipart
+
+# Работа с базой данных (PostgreSQL)
+sqlalchemy>=2.0.0
+asyncpg
+
+# Конфигурация
+python-dotenv
+
+alembic
+
+aioboto3
