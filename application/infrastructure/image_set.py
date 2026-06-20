@@ -22,6 +22,11 @@ s3_config = Config(
 
 async def upload_image_to_s3(file_bytes: bytes, original_filename: str) ->str:
 
+    """
+    UPLOAD FILE FROM BUCKET. INPUT = bytes, str. OUTPUT = URL
+
+    """
+
     ext = os.path.splitext(original_filename)[1] or ".jpg"
     unique_filename =  f"{uuid.uuid4()}{ext}"
 
@@ -50,3 +55,46 @@ async def upload_image_to_s3(file_bytes: bytes, original_filename: str) ->str:
         
     file_url = f"https://s3.tebi.io/{S3_BUCKET_NAME}/{unique_filename}"
     return file_url
+
+
+
+
+
+async def delete_image_from_s3(file_url: str) -> bool:
+    """
+    DELETE FILE FROM BUCKET. INPUT = str "url https//:more". OUTPUT = True/False
+
+    """
+    if not file_url:
+        print("URL is void.")
+        return False
+
+    try:
+        
+        # execute key with URL
+        unique_filename = file_url.rstrip("/").split("/")[-1]
+        
+        print(f" Deleting '{unique_filename}' from S3 at URL...")
+
+        session = Session()
+        
+        async with session.client(
+            service_name="s3",
+            aws_access_key_id=S3_ACESS_KEY,
+            aws_secret_access_key=S3_SECRET_KEY,
+            endpoint_url=S3_ENDPOINT_URL,
+            config=s3_config
+        ) as s3:
+            
+            # send responce
+            await s3.delete_object(
+                Bucket=S3_BUCKET_NAME,
+                Key=unique_filename
+            )
+            
+        print(f" File '{unique_filename}' access deleted from Tebi.io!")
+        return True
+
+    except Exception as e:
+        print(f" Error deleting {file_url} from S3: {e}")
+        return False
