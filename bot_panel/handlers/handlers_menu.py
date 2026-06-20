@@ -3,7 +3,7 @@ import os
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.filters import CommandStart
-from application.bot_panel.keyboards.inline_keyboards import first_message_inline_button
+from bot_panel.keyboards.inline_keyboards import first_message_inline_button
 from dotenv import load_dotenv
 
 load_dotenv()

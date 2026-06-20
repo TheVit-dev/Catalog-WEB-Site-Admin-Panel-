@@ -19,3 +19,5 @@ python-dotenv
 alembic
 
 aioboto3
+
+slugify
