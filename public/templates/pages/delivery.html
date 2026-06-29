@@ -1,0 +1,58 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="delivery-container">
+    
+    <!-- ЛЕВАЯ ЧАСТЬ: ВАРИАНТЫ ДОСТАВКИ -->
+    <div class="delivery-info-side">
+        <h2>Способы доставки</h2>
+        <p class="delivery-subtitle">Мы отправляем заказы максимально оперативно. Всё упаковывается в глухие непрозрачные пакеты без логотипов и надписей.</p>
+        
+        <div class="delivery-cards-list">
+            
+            <!-- По Кордаю -->
+            <div class="delivery-card">
+                <div class="deliv-icon">🚕</div>
+                <div class="deliv-text">
+                    <h3>По Кордаю</h3>
+                    <p>Доставка через городское такси</p>
+                    <span class="deliv-hint">Привезем в течение часа прямо до двери. Полная конфиденциальность перед водителем.</span>
+                </div>
+            </div>
+
+            <!-- Межгород -->
+            <div class="delivery-card">
+                <div class="deliv-icon">🚗</div>
+                <div class="deliv-text">
+                    <h3>Межгород (InDriver)</h3>
+                    <p>Быстрая передача через водителей InDriver</p>
+                    <span class="deliv-hint">Отличный вариант для оперативной отправки в соседние города из рук в руки.</span>
+                </div>
+            </div>
+
+            <!-- По Регионам -->
+            <div class="delivery-card">
+                <div class="deliv-icon">📦</div>
+                <div class="deliv-text">
+                    <h3>По регионам (КазПочта)</h3>
+                    <p>Отправка КазПочтой или любой другой ТК</p>
+                    <span class="deliv-hint">Отправим в любой регион. Способ, тариф и транспортную компанию можем согласовать индивидуально под тебя.</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- ПРАВАЯ ЧАСТЬ: ИНФО ОБ УПАКОВКЕ -->
+    <div class="delivery-media-side">
+        <div class="media-box delivery-pack-placeholder">
+            <div class="media-content">
+                <span class="media-icon">🤫</span>
+                <h3>🔒 100% Анонимная упаковка</h3>
+                <p>Никаких прозрачных пакетов, надписей "Secret18+" или намеков на содержимое. Обычная черная коробка или плотный курьерский сейф-пакет. Никто, кроме тебя, не узнает, что внутри.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

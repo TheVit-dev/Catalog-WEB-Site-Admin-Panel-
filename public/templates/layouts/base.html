@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret18+</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        
+        <header class="site-header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', path='assets/logo.png') }}" alt="Secret18+">
+            </div>
+        </header>
+
+        <nav class="site-nav">
+            <a href="/" class="nav-item {% if request.url.path == '/' %}active{% endif %}">Главная</a>
+            
+            <a href="/about" class="nav-item {% if request.url.path == '/about' %}active{% endif %}">О нас</a>
+            
+            <a href="/location" class="nav-item {% if request.url.path == '/location' %}active{% endif %}">Где мы?</a>
+            <a href="/socials" class="nav-item {% if request.url.path == '/socials' %}active{% endif %}">Соц сети</a>
+            <a href="/delivery" class="nav-item {% if request.url.path == '/delivery' %}active{% endif %}">Доставка</a>
+        </nav>
+
+        <main class="content-wrapper">
+            {% block content %}
+            {% endblock %}
+        </main>
+
+    </div>
+</body>
+</html>

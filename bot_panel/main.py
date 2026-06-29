@@ -7,8 +7,11 @@ from dotenv import load_dotenv
 
 # ИМПОРТИРУЕМ НАШ РОУТЕР
 # (Укажи правильный путь, смотря как называется и где лежит файл с FSM)
-from application.bot_panel.callback.categories_wizard import router as categories_router
-from application.bot_panel.handlers.handlers_menu import admin_router
+from bot_panel.callback.categories_wizard import router as categories_router
+from bot_panel.handlers.handlers_menu import admin_router
+from bot_panel.callback.product_wizard import product_router
+from bot_panel.callback.delete_categoties import delete_categories_router
+from bot_panel.callback.delete_product import delete_product_router
 load_dotenv()
 
 async def main():
@@ -25,13 +28,15 @@ async def main():
     # ПОДКЛЮЧАЕМ РОУТЕР К ДИСПЕТЧЕРУ
     dp.include_router(admin_router)
     dp.include_router(categories_router)
-  
+    dp.include_router(product_router)
+    dp.include_router(delete_categories_router)
+    dp.include_router(delete_product_router)
     
 
     print("🤖 Бот успешно запущен и слушает команды...")
     
     # Запускаем polling (опрос серверов Телеграма)
-    await dp.start_polling(bot)
+    await dp.start_polling(bot, drop_pending_updates=True)
 
 if __name__ == "__main__":
     try:

@@ -1,0 +1,61 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="location-container">
+    
+    <div class="location-info-side">
+        <h2>Наш шоурум</h2>
+        <p class="location-subtitle">Приходи в гости — у нас полная анонимность, приятный свет и крутая атмосфера.</p>
+        
+        <div class="info-cards-list">
+            <div class="info-card">
+                <div class="card-icon">📍</div>
+                <div class="card-text">
+                    <h3>Адрес</h3>
+                    <p>г. Москва, ул. Неоновая, д. 18, стр. 1</p>
+                    <span class="card-hint">Вход со двора, ориентир — розовая вывеска Secret18+</span>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="card-icon">🕒</div>
+                <div class="card-text">
+                    <h3>Часы работы</h3>
+                    <p>Ежедневно: с 12:00 до 22:00</p>
+                    <span class="card-hint">Работаем без перерывов на обед и выходных</span>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="card-icon">📞</div>
+                <div class="card-text">
+                    <h3>Связаться</h3>
+                    <p>+7 (999) 181-18-18</p>
+                    <span class="card-hint">Телефон / Telegram / WhatsApp</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="location-media-side">
+        
+        <div class="media-box video-placeholder">
+            <div class="media-content">
+                <span class="media-icon">🎬</span>
+                <h3>Как нас найти? (Видео-гайд)</h3>
+                <p>Тут будет плеер с видосиком от метро/парковки до нашей двери</p>
+            </div>
+        </div>
+        
+        <div class="media-box map-placeholder">
+            <div class="media-content">
+                <span class="media-icon">🗺️</span>
+                <h3>Интерактивная карта</h3>
+                <p>Сюда потом вставим код виджета Яндекс.Карт или 2GIS</p>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

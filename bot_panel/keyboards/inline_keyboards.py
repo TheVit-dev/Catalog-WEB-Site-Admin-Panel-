@@ -10,12 +10,10 @@ def first_message_inline_button() -> InlineKeyboardMarkup:
     buttons = [
         ("📦 Добавить товар", "add_product"),
         ("🗑️ Удалить товар", "delete_product"),
-        ("✏️ Редактировать товар", "edit_product"),
         ("📁 Добавить категорию", "add_category"),
         ("📂 Удалить категорию", "delete_category"),
         ("📊 Статистика товаров", "view_stats"),
         ("👥 Метрика посещений", "web_metrics"),
-        ("⚙️ Настройки .env", "bot_settings"),
         ("❓ Помощь / Команды", "admin_help")
     ]
     
@@ -27,3 +25,10 @@ def first_message_inline_button() -> InlineKeyboardMarkup:
     builder.adjust(2) 
     
     return builder.as_markup()
+
+
+inline_menu_kb = InlineKeyboardMarkup(
+    inline_keyboard=[
+        [InlineKeyboardButton(text="Вернуться в меню", callback_data="back_to_main_menu")]
+    ]
+)

@@ -1,0 +1,1348 @@
+/* ================= ФИКС ГОРИЗОНТАЛЬНОГО СКРОЛЛА И ЛЮФТА НА МОБИЛКАХ ================= */
+html, body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important; /* Намертво запрещает скролл вправо/влево */
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Автоматически заставляем все элементы правильно считать свою ширину вместе с padding */
+*, *::before, *::after {
+    box-sizing: border-box !important;
+}
+
+/* Если у тебя есть главный контейнер-обертка (например, #app, .wrapper или .main-container) */
+.wrapper, main, #products-container {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+}
+
+/* Базовые цвета и настройки неонового стиля */
+:root {
+    --bg-color: #0a080c;       /* Глубокий темный фон */
+    --card-bg: #141118;        /* Цвет плашек чуть светлее */
+    --neon-pink: #ff2975;      /* Фирменный розовый неон */
+    --text-main: #ffffff;      /* Основной белый текст */
+    --text-muted: #a09fa4;     /* Серый текст для второстепенных элементов */
+}
+
+/* Сброс дефолтных отступов у браузера */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    /* Делаем фон за рамкой чуть темнее, чтобы рамка контрастировала */
+    background-color: #050209; 
+    font-family: 'Montserrat', sans-serif;
+    color: #ffffff;
+    box-sizing: border-box;
+    
+    /* 🔥 ВОТ ОН: Отступ от краев экрана, чтобы рамку не прижимало к монитору */
+    padding: 0px; 
+}
+
+/* Общая рамка вокруг всего контента (как на дизайне) */
+.container {
+    width: 100%;
+    max-width: 100%;
+    /* Вычитаем 40px (отступы body сверху и снизу по 20px), чтобы не появлялся скролл */
+    min-height: calc(100vh); 
+    margin: 0 auto;
+    padding: 10px; /* Внутренние отступы для контента */
+    box-sizing: border-box;
+    
+    /* Цвет самого сайта внутри рамки */
+    background-color: #0b0612; 
+    
+
+}
+
+/* --- СТИЛИ ШАПКИ (HEADER) --- */
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    /* 🔥 ИЗМЕНЕНИЕ: 15px сверху/снизу, 40px слева/справа (двигает кнопки внутрь) */
+    padding: 15px 40px; 
+    
+    border-bottom: 1px solid rgba(255, 41, 117, 0.2);
+    margin-bottom: 20px;
+}
+
+
+
+
+
+.logo-container {
+    text-align: center;
+    flex-grow: 1;
+}
+
+/* Центрируем и масштабируем картинку логотипа */
+.logo-container img {
+    max-height: 75px;
+    width: auto;
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* --- СТИЛИ НАВИГАЦИИ (NAV) --- */
+.site-nav {
+    display: flex;
+    justify-content: center; /* На больших экранах всё ровно по центру */
+    gap: 30px;
+    margin-bottom: 40px;
+    
+    /* 🔥 МАГИЯ ЛЕНТЫ ДЛЯ МОБИЛОК: */
+    overflow-x: auto;        /* Включаем горизонтальный скролл, если пункты не влезают */
+    -webkit-overflow-scrolling: touch; /* Делает скролл на смартфонах плавным и инерционным */
+    padding-bottom: 8px;     /* Запас снизу, чтобы розовая полоска при скролле не обрезалась */
+    
+    /* Скрываем системный ползунок скроллбара в Firefox */
+    scrollbar-width: none;   
+}
+
+/* Скрываем системный ползунок скроллбара в Chrome, Safari и Яндекс.Браузере */
+.site-nav::-webkit-scrollbar {
+    display: none;
+}
+
+
+.nav-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    padding-bottom: 6px;
+    border-bottom: 2px solid transparent;
+}
+
+/* Подсветка активной ссылки и ховер-эффект */
+.nav-link:hover, .nav-link.active {
+    color: var(--text-main);
+    border-bottom: 2px solid var(--neon-pink);
+}
+
+/* --- АДАПТИВНОСТЬ ПОД МОБИЛЬНЫЕ ЭКРАНЫ --- */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px 20px;
+    }
+    .site-nav {
+        gap: 15px;
+    }
+    .nav-link {
+        font-size: 12px;
+    }
+}
+
+/* --- СТРАНИЦА О НАС --- */
+
+.about-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 60px;
+    padding: 40px;
+    margin-top: 20px;
+}
+
+/* Стили для левой колонки с картинкой */
+.about-image-placeholder {
+    flex: 1;
+    min-width: 350px;
+}
+
+.neon-photo-box {
+    width: 100%;
+    height: 450px;
+    background: linear-gradient(135deg, rgba(255, 41, 117, 0.05), rgba(11, 6, 18, 0.6));
+    border: 2px dashed rgba(255, 41, 117, 0.3);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff2975;
+    font-weight: 600;
+    font-size: 16px;
+    text-shadow: 0 0 10px rgba(255, 41, 117, 0.5);
+    box-shadow: 0 0 30px rgba(255, 41, 117, 0.05);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.neon-photo-box:hover {
+    border-color: #ff2975;
+    box-shadow: 0 0 30px rgba(255, 41, 117, 0.2);
+}
+
+/* Стили для правой колонки с текстом */
+.about-text-block {
+    flex: 1.2;
+    min-width: 350px;
+}
+
+.about-text-block h2 {
+    font-size: 36px;
+    color: #ffffff;
+    margin-bottom: 25px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.about-lead {
+    font-size: 18px;
+    color: #ff2975; /* Выделяем вводный абзац розовым */
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.about-text-block p {
+    font-size: 16px;
+    color: #b3b3b3;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+/* Блок с плашками (бэджами) */
+.about-badges {
+    display: flex;
+    gap: 12px;
+    margin-top: 35px;
+    flex-wrap: wrap;
+}
+
+.badge-item {
+    background: rgba(255, 41, 117, 0.08);
+    border: 1px solid rgba(255, 41, 117, 0.25);
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.badge-item:hover {
+    background: rgba(255, 41, 117, 0.15);
+    border-color: #ff2975;
+}
+
+/* Адаптив под мобилки: если экран узкий, колонки встанут друг под друга */
+
+@media (max-width: 992px) {
+    .about-container {
+        /* 🔥 ИЗМЕНЕНИЕ: Меняем column-reverse на обычный column */
+        flex-direction: column; 
+        
+        gap: 40px;
+        padding: 20px;
+    }
+    
+    .neon-photo-box {
+        height: 300px;
+    }
+}
+
+/* 2. Намертво фиксируем сами пункты меню */
+.nav-item {
+    color: #b3b3b3;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding-bottom: 6px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.3s, border-color 0.3s;
+    
+    /* 🔥 ВОТ ОНИ — СПАСИТЕЛИ ОТ СЖАТИЯ: */
+    flex-shrink: 0;          /* Жесткий запрет на уменьшение. Кнопка всегда держит форму */
+    white-space: nowrap;     /* Запрещаем переносить слова ("О НАС" теперь всегда в одну строку) */
+}
+
+.nav-item:hover {
+    color: #ffffff;
+    border-color: rgba(255, 41, 117, 0.4);
+}
+
+.nav-item.active {
+    color: #ffffff;
+    border-color: #ff2975;
+    text-shadow: 0 0 10px rgba(255, 41, 117, 0.6);
+}
+
+/* 3. Адаптивный фикс для совсем мелких экранов */
+@media (max-width: 600px) {
+    .site-nav {
+        /* Если экран узкий и пошел скролл, выравнивание по центру ломает логику. 
+           Поэтому прижимаем к левому краю и даем отступы */
+        justify-content: flex-start; 
+        padding-left: 15px;
+        padding-right: 15px;
+        gap: 20px; /* На мобилках можно расстояние чуть поменьше сделать */
+    }
+}
+
+
+/* --- СТРАНИЦА ГДЕ МЫ / КОНТАКТЫ --- */
+
+.location-container {
+    display: flex;
+    gap: 50px;
+    padding: 40px;
+    margin-top: 10px;
+}
+
+/* Левая колонка */
+.location-info-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.location-info-side h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.location-subtitle {
+    color: #b3b3b3;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 35px;
+}
+
+/* Список неоновых карточек */
+.info-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 24px;
+    background: rgba(255, 41, 117, 0.03);
+    border: 1px solid rgba(255, 41, 117, 0.15);
+    border-radius: 12px;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+
+.info-card:hover {
+    border-color: #ff2975;
+    box-shadow: 0 0 20px rgba(255, 41, 117, 0.15);
+    transform: translateX(5px); /* Легкий сдвиг вправо при наведении */
+}
+
+.card-icon {
+    font-size: 28px;
+    line-height: 1;
+    background: rgba(255, 41, 117, 0.1);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.card-text h3 {
+    margin: 0 0 6px 0;
+    font-size: 18px;
+    color: #ff2975;
+    font-weight: 600;
+}
+
+.card-text p {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.card-hint {
+    font-size: 13px;
+    color: #808080;
+}
+
+/* Правая колонка с медиа */
+.location-media-side {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Общий стиль для боксов заглушек */
+.media-box {
+    flex: 1;
+    min-height: 240px;
+    background: linear-gradient(135deg, rgba(255, 41, 117, 0.02), rgba(11, 6, 18, 0.7));
+    border: 2px dashed rgba(255, 41, 117, 0.2);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
+    box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.media-box:hover {
+    border-color: #ff2975;
+    box-shadow: 0 0 25px rgba(255, 41, 117, 0.15);
+}
+
+.media-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.media-icon {
+    font-size: 36px;
+    text-shadow: 0 0 15px rgba(255, 41, 117, 0.4);
+}
+
+.media-box h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.media-box p {
+    margin: 0;
+    font-size: 14px;
+    color: #666666;
+    max-width: 300px;
+    line-height: 1.4;
+}
+
+/* Адаптив под планшеты и мобилки */
+@media (max-width: 992px) {
+    .location-container {
+        flex-direction: column;
+        padding: 20px;
+        gap: 40px;
+    }
+    
+    .info-card:hover {
+        transform: none; /* Убираем сдвиг на мобилках */
+    }
+}
+
+/* --- СТРАНИЦА СОЦ СЕТИ / КОНТАКТЫ --- */
+
+.socials-container {
+    display: flex;
+    gap: 50px;
+    padding: 40px;
+    margin-top: 10px;
+}
+
+.socials-info-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.socials-info-side h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.socials-subtitle {
+    color: #b3b3b3;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+/* Статичный блок с номером телефона */
+.plain-contact-box {
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 3px solid #ff2975;
+    padding: 15px 20px;
+    border-radius: 4px 12px 12px 4px;
+    margin-bottom: 30px;
+    box-shadow: inset 0 0 15px rgba(255, 41, 117, 0.02);
+}
+
+.plain-label {
+    display: block;
+    font-size: 13px;
+    color: #808080;
+    margin-bottom: 6px;
+}
+
+.plain-phone {
+    font-size: 22px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 1px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Кнопки-ссылки */
+.socials-buttons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 18px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.3s, border-color 0.3s;
+    box-sizing: border-box;
+}
+
+/* Стили для Инстаграма */
+.instagram-btn {
+    background: linear-gradient(135deg, rgba(225, 48, 108, 0.08), rgba(255, 41, 117, 0.03));
+    border: 1px solid rgba(225, 48, 108, 0.2);
+}
+.instagram-btn:hover {
+    border-color: #e1306c;
+    box-shadow: 0 0 25px rgba(225, 48, 108, 0.25);
+    transform: translateY(-2px);
+}
+.instagram-btn .btn-title { color: #e1306c; }
+
+/* Стили для Ватсапа */
+.whatsapp-btn {
+    background: linear-gradient(135deg, rgba(37, 211, 102, 0.08), rgba(11, 6, 18, 0.4));
+    border: 1px solid rgba(37, 211, 102, 0.2);
+}
+.whatsapp-btn:hover {
+    border-color: #25d366;
+    box-shadow: 0 0 25px rgba(37, 211, 102, 0.25);
+    transform: translateY(-2px);
+}
+.whatsapp-btn .btn-title { color: #25d366; }
+
+/* Стили для Звонка */
+.phone-btn {
+    background: linear-gradient(135deg, rgba(255, 41, 117, 0.08), rgba(11, 6, 18, 0.4));
+    border: 1px solid rgba(255, 41, 117, 0.2);
+}
+.phone-btn:hover {
+    border-color: #ff2975;
+    box-shadow: 0 0 25px rgba(255, 41, 117, 0.25);
+    transform: translateY(-2px);
+}
+.phone-btn .btn-title { color: #ff2975; }
+
+/* Начинка кнопок */
+.btn-icon {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.btn-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.btn-title {
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-desc {
+    font-size: 13px;
+    color: #808080;
+}
+
+/* Правая сторона (видео) */
+.socials-media-side {
+    flex: 1.2;
+    display: flex;
+}
+
+.instagram-feed-placeholder {
+    flex: 1;
+    min-height: 400px;
+}
+
+/* Адаптив под мобилки */
+@media (max-width: 992px) {
+    .socials-container {
+        flex-direction: column; /* Текст и кнопки сверху, видос падает под них */
+        padding: 20px;
+        gap: 40px;
+    }
+    
+    .instagram-feed-placeholder {
+        min-height: 320px;
+    }
+    
+    .social-btn:hover {
+        transform: none; /* Убираем микродвижения на тач-экранах */
+    }
+}
+
+/* --- СТРАНИЦА ДОСТАВКИ --- */
+
+.delivery-container {
+    display: flex;
+    gap: 50px;
+    padding: 40px;
+    margin-top: 10px;
+}
+
+.delivery-info-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.delivery-info-side h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.delivery-subtitle {
+    color: #b3b3b3;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 35px;
+}
+
+/* Список тарифов */
+.delivery-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.delivery-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 24px;
+    background: rgba(255, 41, 117, 0.02);
+    border: 1px solid rgba(255, 41, 117, 0.12);
+    border-radius: 12px;
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+
+.delivery-card:hover {
+    border-color: #ff2975;
+    box-shadow: 0 0 20px rgba(255, 41, 117, 0.15);
+    transform: translateY(-2px);
+}
+
+.deliv-icon {
+    font-size: 26px;
+    line-height: 1;
+    background: rgba(255, 41, 117, 0.08);
+    padding: 12px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(255, 41, 117, 0.1);
+}
+
+.deliv-text h3 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.deliv-text p {
+    margin: 0 0 6px 0;
+    font-size: 15px;
+    color: #ff2975;
+    font-weight: 500;
+}
+
+.deliv-hint {
+    font-size: 13px;
+    color: #8c8c8c;
+    line-height: 1.4;
+    display: block;
+}
+
+/* Правая сторона про упаковку */
+.delivery-media-side {
+    flex: 1;
+    display: flex;
+}
+
+.delivery-pack-placeholder {
+    flex: 1;
+    min-height: 380px;
+    background: linear-gradient(135deg, rgba(255, 41, 117, 0.05), rgba(11, 6, 18, 0.8));
+    border: 1px dashed #ff2975; /* Четкий штрих-пунктир коробки */
+}
+
+.delivery-pack-placeholder p {
+    color: #b3b3b3 !important;
+    max-width: 380px !important;
+    line-height: 1.6 !important;
+    font-size: 15px !important;
+}
+
+/* Адаптивчик */
+@media (max-width: 992px) {
+    .delivery-container {
+        flex-direction: column;
+        padding: 20px;
+        gap: 40px;
+    }
+    
+    .delivery-pack-placeholder {
+        min-height: 280px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==========================================================================
+   БАЗОВЫЕ НАСТРОЙКИ САЙТА (ЧТОБЫ НИЧЕГО НЕ СЛЕТАЛО)
+   ========================================================================== */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden; /* ЗАПРЕЩАЕТ ЭКРАНУ ДЕРГАТЬСЯ И СКОЛЬЗИТЬ ВБОК */
+    background-color: #0d0d12;
+    color: #fff;
+    font-family: system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+/* ==========================================================================
+   🔥🔥 ПОЛНЫЙ ФИКС КАТЕГОРИЙ (ПРИВОДИМ К ВИДУ ИЗ СКРИНШОТА) 🔥🔥
+   ========================================================================== */
+
+#categories-container {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 15px !important;
+    box-sizing: border-box !important;
+}
+
+/* САМА КАРТОЧКА КАТЕГОРИИ (БАННЕР "МУЖСКОЕ" / "ЖЕНСКОЕ") */
+.category-card-ps {
+    position: relative !important;
+    width: 100% !important;
+    background: #13131a !important; /* ТЕМНЫЙ ФОН КАРТОЧКИ */
+    border-radius: 16px !important;  /* СКРУГЛЕНИЕ УГЛОВ КАНАВА */
+    
+    /* 🔴 НАСТРОЙКА НЕОНОВОГО СВЕЧЕНИЯ СНИЗУ КАК НА СКРИНЕ */
+    border: 1px solid rgba(255, 51, 102, 0.3) !important;
+    box-shadow: 0 8px 25px rgba(255, 51, 102, 0.25) !important;
+    
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    margin-bottom: 20px !important;
+}
+
+/* КОНТЕНТ ВНУТРИ КАТЕГОРИИ (ТЕКСТ + КНОПКА) */
+.category-card-content {
+    display: flex !important;
+    flex-direction: column !important; /* ЖЕСТКО СТАВИМ ТЕКСТ И КНОПКУ ДРУГ ПОД ДРУГОМ */
+    align-items: center !important;    /* ВЫРАВНИВАЕМ ВСЁ СТРОГО ПО ЦЕНТРУ */
+    justify-content: center !important;
+    padding: 35px 20px !important;     /* ВНУТРЕННИЕ ОТСТУПЫ, ЧТОБЫ БАННЕР БЫЛ ВЫСОКИМ И ОБЪЕМНЫМ */
+    text-align: center !important;
+    box-sizing: border-box !important;
+}
+
+/* ТЕКСТ НАЗВАНИЯ КАТЕГОРИИ ("МУЖСКОЕ") */
+.category-card-title {
+    color: #ffffff !important;
+    font-size: 1.8rem !important;      /* КРУПНЫЙ ЖИРНЫЙ ШРИФТ */
+    font-weight: 800 !important;
+    text-transform: uppercase !important; /* ВСЕ БУКВЫ БОЛЬШИЕ */
+    letter-spacing: 1px !important;
+    margin: 0 0 16px 0 !important;     /* ОТСТУП СНИЗУ ДО КНОПКИ */
+}
+
+/* РОЗОВАЯ КНОПКА "СМОТРЕТЬ" НА БАННЕРЕ */
+.category-card-btn {
+    background: #ff3366 !important;    /* ТОТ САМЫЙ ЯРКО-РОЗОВЫЙ ЦВЕТ */
+    color: #ffffff !important;
+    border: none !important;
+    
+    /* 🔴 СКРУГЛЕНИЕ КНОПКИ (ДЕЛАЕМ ЕЕОВАЛЬНОЙ ПОДПИЛЕННОЙ, КАК НА СКРИНЕ) */
+    padding: 12px 35px !important;     /* ШИРИНА И ВЫСОТА КНОПКИ */
+    border-radius: 25px !important;    /* МАКСИМАЛЬНОЕ СКРУГЛЕНИЕ В ОВАЛ */
+    
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: background 0.2s ease, transform 0.2s ease !important;
+    box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4) !important; /* СВЕЧЕНИЕ КНОПКИ */
+}
+
+.category-card-btn:hover {
+    background: #ff5588 !important;
+    transform: scale(1.03) !important; /* СЛЕГКА УВЕЛИЧИВАЕТСЯ ПРИ НАВЕДЕНИИ */
+}
+
+
+/* ==========================================================================
+   ⚡⚡ СЕТКА И ВЫСОКИЕ КАРТОЧКИ ТОВАРОВ (ДЛЯ МОБИЛОК И КОМПОВ) ⚡⚡
+   ========================================================================== */
+
+#products-container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+    gap: 20px !important;
+    padding: 15px !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+.custom-prod-card {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #13131a !important;
+    border: 1px solid rgba(255, 51, 102, 0.2) !important;
+    border-radius: 14px !important;
+    padding: 12px !important;
+    box-sizing: border-box !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important;
+    height: 100% !important;
+}
+
+/* ОБЕРТКА КАРТИНКИ ТОВАРА */
+.custom-prod-img-wrap {
+    width: 100% !important;
+    
+    /* 🔴 ПРОПОРЦИЯ КАРТИНКИ: 3/4 — ВЫТЯНУТЫЙ ВЕРТИКАЛЬНЫЙ СТИЛЬ */
+    aspect-ratio: 3 / 4 !important; 
+    
+    background: #0d0d12 !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    position: relative !important;
+}
+
+.custom-prod-img-wrap img {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    object-fit: cover !important; 
+}
+
+/* НАЗВАНИЕ И ЦЕНА */
+.custom-prod-title {
+    font-size: 0.95rem !important;
+    line-height: 1.4 !important;
+    color: #fff !important;
+    margin: 12px 0 8px 0 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+}
+
+.custom-prod-footer {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-top: auto !important; /* ВСЕГДА ПРИЖИМАЕТ НИЗ КАРТОЧКИ */
+}
+
+.custom-prod-price {
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    color: #ff3366 !important;
+}
+
+
+/* ==========================================================================
+   📱 ЖЕСТКИЙ АДАПТИВ ДЛЯ МОБИЛОК (ЭКРАНЫ ДО 480px) 📱
+   ========================================================================== */
+@media (max-width: 480px) {
+    
+    /* СЕТКА СТАВИТ КАРТОЧКИ В 2 РОВНЫХ РЯДА НА ТЕЛЕФОНЕ */
+    #products-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+        padding: 10px !important;
+    }
+
+    .custom-prod-card {
+        padding: 8px !important;
+        border-radius: 12px !important;
+    }
+
+    /* УМЕНЬШАЕМ ШРИФТ КАТЕГОРИИ НА МОБИЛКЕ, ЧТОБЫ НЕ БЫЛО ГИГАНТСКИМ */
+    .category-card-title {
+        font-size: 1.5rem !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .category-card-btn {
+        padding: 10px 28px !important;
+        font-size: 0.9rem !important;
+    }
+}
+/* ==========================================================================
+   ОСНОВНОЙ КОНТЕЙНЕР ДЛЯ СЕТКИ ТОВАРОВ (ДЕСКТОП)
+   ========================================================================== */
+#products-container {
+    display: grid !important;
+    /* НА КОМПЬЮТЕРЕ КАРТОЧКИ БУДУТ ПЕРЕНАСИМАЯ АВТОМАТИЧЕСКИ, МИНИМУМ 250px */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important;
+    gap: 20px !important;              /* ЗАЗОР МЕЖДУ КАРТОЧКАМИ */
+    padding: 20px !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;       /* ЧТОБЫ НЕОНОВОЕ СВЕЧЕНИЕ НЕ ОБРЕЗАЛОСЬ */
+}
+
+/* ==========================================================================
+   РОДНАЯ КАРТОЧКА ТОВАРА (ДЕКСТОПНЫЙ ВИД)
+   ========================================================================== */
+.custom-prod-card {
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: #13131a !important;
+    border: 1px solid rgba(255, 51, 102, 0.3) !important; /* РОЗОВАЯ НЕОНОВАЯ РАМКА */
+    border-radius: 14px !important;
+    padding: 12px !important;
+    box-sizing: border-box !important;
+    box-shadow: 0 0 15px rgba(255, 51, 102, 0.2) !important; /* НЕОНОВЫЙ ШЛЕЙФ */
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+    height: 100% !important; /* ЗАСТАВЛЯЕТ ВСЕ КАРТОЧКИ БЫТЬ ОДНОЙ ВЫСОТЫ */
+}
+
+.custom-prod-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 0 0 25px rgba(255, 51, 102, 0.5) !important; /* ПРИ НАВЕДЕНИИ СВЕТИТСЯ ЯРЧЕ */
+}
+
+/* ==========================================================================
+   🔴 БЛОК С КАРТИНКОЙ (ТУТ ЖИВЕТ ТА САМАЯ ВЫСОТА) 🔴
+   ========================================================================== */
+.custom-prod-img-wrap {
+    width: 100% !important;
+    
+    /* ВЫСОКИЙ ПРЯМОУГОЛЬНЫЙ ВИД (ПРОПОРЦИЯ 3 К 4, КАК БЫЛО С МАШИНОЙ) 
+       ЕСЛИ КАРТОЧКА КАЖЕТСЯ СЛИШКОМ ВЫТЯНУТОЙ — ПОСТАВЬ ТУТ 4 / 5 ИЛИ 1 / 1 (КВАДРАТ) */
+    aspect-ratio: 3 / 4 !important; 
+    
+    background: #0d0d12 !important;  /* ТЕМНАЯ ПОДЛОЖКА ПОД КАРТИНКУ */
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    position: relative !important;
+}
+
+/* САМА КАРТИНКА ВНУТРИ ОБЕРТКИ */
+.custom-prod-img-wrap img {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    
+    /* cover РАСТЯГИВАЕТ КАРТИНКУ НА ВСЮ ВЫСОТУ БЕЗ ДЕФОРМАЦИИ (КАК БЫЛО НА СКРИНЕ С МАШИНОЙ).
+       ЕСЛИ КАРТИНКА ИЗ-ЗА ЭТОГО ОБРЕЗАЕТСЯ ПО БОКАМ, ЗАМЕНИ cover НА contain — ТОГДА ОНА ВЛЕЗЕТ ЦЕЛИКОМ */
+    object-fit: cover !important; 
+}
+
+/* ==========================================================================
+   НАЗВАНИЕ ТОВАРА (ТЕПЕРЬ КРУПНЕЕ И ЖИРНЕЕ)
+   ========================================================================== */
+.custom-prod-title {
+    font-size: 1.1rem !important;         /* Увеличили размер */
+    font-weight: 700 !important;          /* Сделали жирным (Bold) */
+    line-height: 1.3 !important;
+    color: #fff !important;
+    margin: 10px 0 6px 0 !important;      /* Отступ снизу до цены */
+    min-height: auto !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    
+    /* Ограничение в 2 строки, чтобы верстка не ехала от длинных названий */
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+}
+
+/* ==========================================================================
+   ПОДВАЛ КАРТОЧКИ (ПЕРЕВЕРНУТ В КОЛОННУ — ЦЕНА СТРОГО ПОД НАЗВАНИЕМ)
+   ========================================================================== */
+.custom-prod-footer {
+    display: flex !important;
+    flex-direction: column !important;    /* 🔴 ЖЕСТКО СТАВИТ ЦЕНУ ПОД НАЗВАНИЕ */
+    align-items: flex-start !important;   /* Выравнивание цены по левому краю */
+    justify-content: flex-start !important;
+    width: 100% !important;
+    margin-top: auto !important;          /* Прижимает весь блок к низу карточки */
+    padding-top: 2px !important;
+    box-sizing: border-box !important;
+}
+
+/* ==========================================================================
+   ЦЕНА ТОВАРА (БРУТАЛЬНЫЙ ЖИРНЫЙ ШРИФТ И ЖЕСТКИЙ ФИКС ОБРЕЗКИ)
+   ========================================================================== */
+.custom-prod-price {
+    font-size: 1.25rem !important;        /* Сделали заметно крупнее */
+    font-weight: 800 !important;          /* Максимально жирный шрифт (Extra Bold) */
+    color: #ff3366 !important;            /* Яркий неоновый цвет цены */
+    margin: 0 !important;
+    padding: 0 !important;
+    
+    /* 🔴 МЕНТАЛЬНЫЙ ФИКС: Запрещает цене ломаться, переноситься или вылезать за рамки */
+    white-space: nowrap !important;       /* Никаких переносов «ТГ» на новую строку */
+    overflow: hidden !important;          /* Прячет всё, что не влезает */
+    text-overflow: ellipsis !important;   /* Если цена не влезет, она аккуратно пустит три точки вместо взрыва верстки */
+    width: 100% !important;
+}
+
+
+/* ==========================================================================
+   🔴 СЕТКА ДЛЯ МОБИЛОК: СТРОГО 2 ТОВАРА В РЯД (ДЛЯ ВСЕХ СМАРТФОНОВ)
+   ========================================================================== */
+/* ==========================================================================
+   🔥 ЖЕЛЕЗОБЕТОННЫЙ ФИКС КАРТИНОК: ЗАПОЛНЯЕМ 100% ПЛОЩАДИ БЕЗ ПУСТОТ 🔥
+   ========================================================================== */
+@media (max-width: 768px) {
+
+    /* 1. Задаем жесткие размеры для контейнера (обертки) картинки */
+    .custom-prod-img-wrap {
+        width: 100% !important;
+        height: 180px !important;        /* Фиксированная высота для мобилок, чтобы все карточки были в струну */
+        position: relative !important;
+        overflow: hidden !important;
+        border-radius: 10px !important;
+        background: #0d0d12 !important;
+    }
+
+    /* 2. Принуждаем саму картинку сожрать ВСЮ высоту и ширину обертки */
+    .custom-prod-card img,
+    .custom-prod-img-wrap img {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;          /* Растягиваем на всю высоту родителя */
+        object-fit: cover !important;     /* Убирает пустые поля, аккуратно заполняя весь прямоугольник */
+        
+        /* Идеальное центрирование внутри контейнера */
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+    }
+    
+    /* Оставляем сетку и шрифты без изменений, они встали ровно */
+    #products-container {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+        padding: 0 8px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .custom-prod-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        height: auto !important;
+        padding: 8px !important;
+        box-sizing: border-box !important;
+    }
+
+    .custom-prod-title {
+        font-size: 0.95rem !important;
+        font-weight: 700 !important;
+        margin: 8px 0 4px 0 !important;
+    }
+
+    .custom-prod-price {
+        font-size: 1.1rem !important;
+        font-weight: 800 !important;
+    }
+}
+
+
+
+
+
+
+
+
+/* ==========================================================================
+   🎛️ СТИЛИЗАЦИЯ ПАГИНАЦИИ (КНОПКИ СТРАНИЦ)
+   ========================================================================== */
+.page-btn {
+    background: #13131a !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 51, 102, 0.3) !important;
+    border-radius: 8px !important;
+    padding: 8px 14px !important;
+    margin: 0 4px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Ховер на обычные кнопки */
+.page-btn:hover:not(:disabled) {
+    background: rgba(255, 51, 102, 0.1) !important;
+    border-color: #ff3366 !important;
+    color: #ff3366 !important;
+}
+
+/* Активная страница (текущая) */
+.page-btn.active-page {
+    background: #ff3366 !important;
+    color: #ffffff !important;
+    border-color: #ff3366 !important;
+    box-shadow: 0 0 10px rgba(255, 51, 102, 0.4) !important;
+}
+
+/* Отключенные кнопки (когда дальше листать нельзя) */
+.page-btn:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==========================================================================
+   🎯 КНОПКА «← НАЗАД» (ВЫРАВНИВАНИЕ И СТИЛЬ)
+   ========================================================================== */
+.back-btn, 
+main > a[href*="back"], 
+#back-button { 
+    display: inline-flex !important;
+    align-items: center !important;
+    color: #ffffff !important;
+    text-transform: uppercase !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
+    text-decoration: none !important;
+    letter-spacing: 1px !important;
+    padding: 12px 8px !important; 
+    margin-bottom: 8px !important;
+    transition: color 0.2s ease !important;
+}
+
+.back-btn:hover {
+    color: #ff3366 !important; /* Розовый ховер */
+}
+
+/* ==========================================================================
+   🔥 СТИЛИЗАЦИЯ БАННЕРА КАТЕГОРИИ ПО ТВОИМ КЛАССАМ 🔥
+   ========================================================================== */
+
+/* Главная обертка баннера карточки */
+.category-card-ps {
+    background: #13131a !important; /* Глубокий темный фон вместо белого */
+    border: 1px solid rgba(255, 51, 102, 0.4) !important; /* Розовая неоновая рамка */
+    box-shadow: 0 0 15px rgba(255, 51, 102, 0.2) !important; /* Неоновое свечение */
+    border-radius: 14px !important;
+    height: 90px !important; /* Компактная фиксированная высота баннера */
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+
+    /* ЖЕСТКИЙ ФИКС ВЫРАВНИВАНИЯ КРАЕВ (Вровень с карточками товаров) */
+    margin: 0 8px 16px 8px !important; 
+    width: calc(100% - 16px) !important; 
+}
+
+/* Внутренний контейнер контента (делаем его в строку) */
+.category-card-content {
+    display: flex !important;
+    justify-content: space-between !important; /* Название слева, кнопка справа */
+    align-items: center !important;         /* Центрируем по вертикали */
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 20px !important;              /* Отступы внутри плашки */
+    box-sizing: border-box !important;
+}
+
+/* Заголовок категории (например, "МУЖСКОЕ") */
+.category-card-title {
+    color: #ffffff !important;
+    font-size: 1.3rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Кнопка "Смотреть" внутри баннера */
+.category-card-btn {
+    background: #ff3366 !important; /* Наш сочный розовый */
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 10px 20px !important;
+    font-size: 0.9rem !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    box-shadow: 0 4px 10px rgba(255, 51, 102, 0.3) !important;
+    transition: transform 0.2s ease, background 0.2s ease !important;
+}
+
+.category-card-btn:hover {
+    background: #ff4777 !important;
+    transform: scale(1.03) !important;
+}
+
+/* Дополнительный фикс, чтобы сетка товаров не прилипала к баннеру */
+#products-container {
+    margin-top: 4px !important;
+}
+
+/* Адаптив под мобилки для баннера категорий */
+@media (max-width: 480px) {
+    .category-card-ps {
+        height: 80px !important; /* На мобилке делаем чуть тоньше */
+    }
+    
+    .category-card-title {
+        font-size: 1.1rem !important; /* Уменьшаем шрифт, чтобы не ломало строку */
+    }
+
+    .category-card-btn {
+        padding: 8px 16px !important;
+        font-size: 0.8rem !important;
+    }
+}
+
+
+
+
+
+
+
+
+/* 1. Контейнер категорий (принудительно) */
+/* 1. Карточка: убираем flex, чтобы она была просто блоком для фона */
+.custom-cat-card {
+    display: block !important; 
+    width: 95% !important;    /* Делаем шире */
+    margin: 0 auto 15px auto !important; /* Центрируем и добавляем отступ снизу */
+    height: 140px !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    background-size: cover !important;
+    background-position: center !important;
+    border: 1px solid rgba(255, 51, 102, 0.3) !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+}
+
+/* 2. Контент: вот он должен быть flex-контейнером */
+.custom-cat-content {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important; /* Разносит заголовок и кнопку по краям */
+    align-items: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 40px !important;
+    background: rgba(0, 0, 0, 0.6) !important; /* Затемнение */
+    box-sizing: border-box !important;
+}
+
+/* 3. Заголовок и кнопка */
+.custom-cat-title {
+    margin: 0 !important;
+    font-size: 1.5rem !important;
+    color: white !important;
+}
+
+.custom-cat-btn {
+    flex-shrink: 0 !important; /* Чтобы кнопка не сжималась */
+    padding: 10px 25px !important;
+    background-color: #ff3366 !important;
+    border: none !important;
+    color: white !important;
+    border-radius: 8px !important;
+    cursor: pointer !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
