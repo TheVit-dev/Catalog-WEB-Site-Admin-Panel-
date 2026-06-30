@@ -749,76 +749,179 @@ html, body {
     margin: 0;
     padding: 0;
 }
-/* ==========================================================================
-   🔥🔥 ПОЛНЫЙ ФИКС КАТЕГОРИЙ (ПРИВОДИМ К ВИДУ ИЗ СКРИНШОТА) 🔥🔥
-   ========================================================================== */
+/* ========== КАРТОЧКИ КАТЕГОРИЙ (ОСНОВНОЙ СТИЛЬ) ========== */
 
-#categories-container {
-    width: 100% !important;
-    max-width: 1200px !important;
-    margin: 0 auto !important;
-    padding: 15px !important;
-    box-sizing: border-box !important;
-}
-
-/* САМА КАРТОЧКА КАТЕГОРИИ (БАННЕР "МУЖСКОЕ" / "ЖЕНСКОЕ") */
-.category-card-ps {
+/* САМА КАРТОЧКА КАТЕГОРИИ */
+.custom-cat-card {
     position: relative !important;
     width: 100% !important;
-    background: #13131a !important; /* ТЕМНЫЙ ФОН КАРТОЧКИ */
-    border-radius: 16px !important;  /* СКРУГЛЕНИЕ УГЛОВ КАНАВА */
-    
-    /* 🔴 НАСТРОЙКА НЕОНОВОГО СВЕЧЕНИЯ СНИЗУ КАК НА СКРИНЕ */
+    height: 280px !important;
+    background: #13131a !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: scroll !important;
+    border-radius: 16px !important;
     border: 1px solid rgba(255, 51, 102, 0.3) !important;
     box-shadow: 0 8px 25px rgba(255, 51, 102, 0.25) !important;
-    
     overflow: hidden !important;
     box-sizing: border-box !important;
     margin-bottom: 20px !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
 }
 
-/* КОНТЕНТ ВНУТРИ КАТЕГОРИИ (ТЕКСТ + КНОПКА) */
-.category-card-content {
+.custom-cat-card:hover {
+    border-color: #ff2975 !important;
+    box-shadow: 0 12px 40px rgba(255, 51, 102, 0.4) !important;
+    transform: translateY(-5px) !important;
+}
+
+/* ЧЕРНЫЙ ОВЕРЛЕЙ ПОВЕРХ ФОНА */
+.custom-cat-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 100%) !important;
+    z-index: 1 !important;
+}
+
+/* КОНТЕНТ ВНУТРИ КАРТОЧКИ */
+.custom-cat-content {
+    position: relative !important;
+    z-index: 2 !important;
     display: flex !important;
-    flex-direction: column !important; /* ЖЕСТКО СТАВИМ ТЕКСТ И КНОПКУ ДРУГ ПОД ДРУГОМ */
-    align-items: center !important;    /* ВЫРАВНИВАЕМ ВСЁ СТРОГО ПО ЦЕНТРУ */
+    flex-direction: column !important;
+    align-items: center !important;
     justify-content: center !important;
-    padding: 35px 20px !important;     /* ВНУТРЕННИЕ ОТСТУПЫ, ЧТОБЫ БАННЕР БЫЛ ВЫСОКИМ И ОБЪЕМНЫМ */
+    padding: 40px 20px !important;
+    height: 100% !important;
     text-align: center !important;
     box-sizing: border-box !important;
 }
 
-/* ТЕКСТ НАЗВАНИЯ КАТЕГОРИИ ("МУЖСКОЕ") */
-.category-card-title {
+/* НАЗВАНИЕ КАТЕГОРИИ */
+.custom-cat-title {
     color: #ffffff !important;
-    font-size: 1.8rem !important;      /* КРУПНЫЙ ЖИРНЫЙ ШРИФТ */
-    font-weight: 800 !important;
-    text-transform: uppercase !important; /* ВСЕ БУКВЫ БОЛЬШИЕ */
-    letter-spacing: 1px !important;
-    margin: 0 0 16px 0 !important;     /* ОТСТУП СНИЗУ ДО КНОПКИ */
+    font-size: 2.2rem !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    margin: 0 0 20px 0 !important;
+    text-shadow: 0 0 20px rgba(255, 51, 102, 0.6) !important;
 }
 
-/* РОЗОВАЯ КНОПКА "СМОТРЕТЬ" НА БАННЕРЕ */
-.category-card-btn {
-    background: #ff3366 !important;    /* ТОТ САМЫЙ ЯРКО-РОЗОВЫЙ ЦВЕТ */
+/* КНОПКА НА КАРТОЧКЕ */
+.custom-cat-btn {
+    background: linear-gradient(135deg, #ff3366, #ff5588) !important;
     color: #ffffff !important;
-    border: none !important;
-    
-    /* 🔴 СКРУГЛЕНИЕ КНОПКИ (ДЕЛАЕМ ЕЕОВАЛЬНОЙ ПОДПИЛЕННОЙ, КАК НА СКРИНЕ) */
-    padding: 12px 35px !important;     /* ШИРИНА И ВЫСОТА КНОПКИ */
-    border-radius: 25px !important;    /* МАКСИМАЛЬНОЕ СКРУГЛЕНИЕ В ОВАЛ */
-    
-    font-size: 1rem !important;
-    font-weight: 600 !important;
+    border: 2px solid #ff3366 !important;
+    padding: 14px 40px !important;
+    border-radius: 30px !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
     cursor: pointer !important;
-    transition: background 0.2s ease, transform 0.2s ease !important;
-    box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4) !important; /* СВЕЧЕНИЕ КНОПКИ */
+    transition: all 0.3s ease !important;
+    box-shadow: 0 6px 20px rgba(255, 51, 102, 0.4) !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
 }
 
-.category-card-btn:hover {
-    background: #ff5588 !important;
-    transform: scale(1.03) !important; /* СЛЕГКА УВЕЛИЧИВАЕТСЯ ПРИ НАВЕДЕНИИ */
+.custom-cat-btn:hover {
+    background: linear-gradient(135deg, #ff5588, #ff3366) !important;
+    transform: scale(1.05) translateY(-2px) !important;
+    box-shadow: 0 10px 30px rgba(255, 51, 102, 0.6) !important;
 }
+
+.custom-cat-btn:active {
+    transform: scale(0.98) !important;
+}
+
+/* КНОПКА НАЗАД */
+.custom-back-card {
+    background: rgba(255, 51, 102, 0.05) !important;
+    border: 2px solid rgba(255, 51, 102, 0.2) !important;
+}
+
+.custom-back-card::before {
+    display: none !important;
+}
+
+.custom-back-card .custom-cat-content {
+    justify-content: center !important;
+}
+
+/* АДАПТИВ ДЛЯ ПЛАНШЕТОВ И МОБИЛОК */
+@media (max-width: 768px) {
+    .custom-cat-card {
+        height: 240px !important;
+    }
+    
+    .custom-cat-title {
+        font-size: 1.8rem !important;
+    }
+    
+    .custom-cat-btn {
+        padding: 12px 30px !important;
+        font-size: 0.95rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .custom-cat-card {
+        height: 200px !important;
+        margin-bottom: 15px !important;
+    }
+    
+    .custom-cat-title {
+        font-size: 1.4rem !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .custom-cat-btn {
+        padding: 10px 25px !important;
+        font-size: 0.85rem !important;
+    }
+}
+
+/* СЕТКА ДЛЯ КАТЕГОРИЙ */
+#categories-container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: 20px !important;
+    padding: 15px !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+    #categories-container {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 15px !important;
+        padding: 10px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #categories-container {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* ==========================================================================
@@ -1296,8 +1399,6 @@ main > a[href*="back"],
 /* 2. Контент: вот он должен быть flex-контейнером */
 .custom-cat-content {
     display: flex !important;
-    flex-direction: row !important;
-    justify-content: space-between !important; /* Разносит заголовок и кнопку по краям */
     align-items: center !important;
     width: 100% !important;
     height: 100% !important;
@@ -1331,6 +1432,291 @@ main > a[href*="back"],
 
 
 
+/* ЖЕСТКИЙ Фины:**
+1. **API не возвращает данные** (kategorii не загружаются)
+2. **JavaScript ошибка** при рендеринге
+3. **CSS скрывает контейнер** (display: none или visibility: hidden)
+
+Давай диагностируем! 🔍
+
+Открой консоль браИКс КАТЕГОРИЙ - УБЕЙ ЛЮБЫЕ КОНФЛИКТЫ */
+#categories-container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: 20px !important;
+    padding: 20px !important;
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    background:узера (F12) и скопируй ошибки. Там должно быть что-то типа:
+}
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+/* ==========================================================================
+   СТИЛИ СТРАНИЦЫ ТОВАРА (SECRET 18+)
+   ========================================================================== */
+
+/* Основной контейнер всей страницы */
+#product-detail-container {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+    color: #ffffff !important;
+}
+
+/* Кнопка "Назад в каталог" */
+.detail-back-btn {
+    background: transparent !important;
+    color: #ff3366 !important;
+    border: 1px solid #ff3366 !important;
+    padding: 10px 22px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    margin-bottom: 25px !important;
+    transition: all 0.3s ease !important;
+    text-transform: uppercase !important;
+    font-size: 0.85rem !important;
+    letter-spacing: 0.5px !important;
+}
+
+.detail-back-btn:hover {
+    background: #ff3366 !important;
+    color: #fff !important;
+    box-shadow: 0 0 15px rgba(255, 51, 102, 0.4) !important;
+}
+
+/* Главный разделитель: Слева - Галерея, Справа - Описание */
+.product-detail-layout {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 50px !important;
+    width: 100% !important;
+    align-items: flex-start !important;
+}
+
+/* --- ЛЕВАЯ ЧАСТЬ: ГАЛЕРЕЯ --- */
+.product-detail-gallery {
+    flex: 1 !important;
+    max-width: 480px !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Главное окно для просмотра картинки */
+.main-image-window {
+    position: relative !important;
+    width: 100% !important;
+    height: 450px !important;
+    background: #09090d !important;
+    border: 1px solid rgba(255, 51, 102, 0.2) !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+/* Сама главная картинка (убирает дублирование и растягивание) */
+#active-detail-img {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important; /* Картинка масштабируется без искажений */
+    display: block !important;
+}
+
+/* Стрелочки поверх картинки */
+.gallery-arrow {
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    color: #ffffff !important;
+    border: none !important;
+    width: 42px !important;
+    height: 42px !important;
+    border-radius: 50% !important;
+    font-size: 1.3rem !important;
+    cursor: pointer !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    transition: all 0.2s ease !important;
+    z-index: 5 !important;
+    user-select: none !important;
+}
+
+.gallery-arrow:hover {
+    background: #ff3366 !important;
+    color: #fff !important;
+    box-shadow: 0 0 10px #ff3366 !important;
+}
+
+.prev-arrow { left: 15px !important; }
+.next-arrow { right: 15px !important; }
+
+/* Линейка миниатюр снизу */
+.thumbnails-track {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 10px !important;
+    margin-top: 15px !important;
+    overflow-x: auto !important; /* Скролл, если картинок много */
+    padding-bottom: 6px !important;
+}
+
+/* Стилизация полосы скролла миниатюр */
+.thumbnails-track::-webkit-scrollbar { height: 4px !important; }
+.thumbnails-track::-webkit-scrollbar-thumb { background: #ff3366 !important; border-radius: 4px !important; }
+
+/* Обертка для маленькой картинки */
+.thumb-wrapper {
+    width: 75px !important;
+    height: 75px !important;
+    flex-shrink: 0 !important;
+    border-radius: 8px !important;
+    border: 2px solid transparent !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    background: #12121a !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    transition: all 0.2s ease !important;
+}
+
+.thumb-wrapper img {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: cover !important;
+}
+
+/* Активная миниатюра получает неоновую рамку */
+.thumb-active {
+    border-color: #ff3366 !important;
+    box-shadow: 0 0 10px rgba(255, 51, 102, 0.5) !important;
+}
+
+
+/* --- ПРАВАЯ ЧАСТЬ: ИНФОРМАЦИЯ --- */
+.product-detail-info {
+    flex: 1.2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+}
+
+/* Название товара */
+.detail-product-title {
+    font-size: 2.4rem !important;
+    font-weight: 800 !important;
+    margin: 0 0 12px 0 !important;
+    color: #ffffff !important;
+    line-height: 1.2 !important;
+}
+
+/* Цена товара */
+.detail-product-price {
+    font-size: 1.8rem !important;
+    font-weight: 700 !important;
+    color: #ff3366 !important;
+    margin-bottom: 20px !important;
+    text-shadow: 0 0 8px rgba(255, 51, 102, 0.3) !important;
+}
+
+/* Линия-разделитель */
+.detail-divider {
+    width: 100% !important;
+    height: 1px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    margin-bottom: 25px !important;
+}
+
+/* Блок описания */
+.detail-desc-block {
+    width: 100% !important;
+    margin-bottom: 35px !important;
+}
+
+.detail-desc-block h3 {
+    font-size: 1.1rem !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    margin: 0 0 10px 0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+}
+
+.detail-desc-block p {
+    font-size: 1.05rem !important;
+    line-height: 1.6 !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    margin: 0 !important;
+}
+
+/* Кнопка ЗАКАЗАТЬ */
+.detail-buy-btn {
+    width: 100% !important;
+    max-width: 320px !important;
+    background: #ff3366 !important;
+    color: #ffffff !important;
+    border: none !important;
+    padding: 16px 30px !important;
+    border-radius: 12px !important;
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 15px rgba(255, 51, 102, 0.2) !important;
+}
+
+.detail-buy-btn:hover {
+    background: #ff4d7d !important;
+    box-shadow: 0 0 25px rgba(255, 51, 102, 0.5) !important;
+    transform: translateY(-2px) !important;
+}
+
+.detail-buy-btn:active {
+    transform: translateY(0) !important;
+}
+
+/* --- АДАПТИВ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА --- */
+@media (max-width: 768px) {
+    .product-detail-layout {
+        flex-direction: column !important;
+        gap: 30px !important;
+    }
+    .product-detail-gallery {
+        max-width: 100% !important;
+    }
+    .main-image-window {
+        height: 360px !important;
+    }
+    .detail-product-title {
+        font-size: 1.8rem !important;
+    }
+    .detail-buy-btn {
+        max-width: 100% !important;
+    }
+}
 
 
 
@@ -1346,3 +1732,95 @@ main > a[href*="back"],
 
 
 
+
+
+
+
+
+
+
+
+/* ==========================================================================
+   ПАГИНАЦИЯ КАТАЛОГА (СТРАНИЦЫ ТОВАРОВ)
+   ========================================================================== */
+
+.custom-pagination {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin-top: 30px !important;
+    margin-bottom: 40px !important;
+}
+
+/* Общий стиль для кнопок страниц и стрелочек */
+.page-btn {
+    background: #09090d !important; /* Темный фон кнопки */
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 51, 102, 0.4) !important;
+    width: 45px !important;
+    height: 45px !important;
+    border-radius: 10px !important;
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    transition: all 0.3s ease !important;
+    user-select: none !important;
+}
+
+/* Ховер для активных кнопок */
+.page-btn:hover:not(:disabled) {
+    border-color: #ff3366 !important;
+    color: #ff3366 !important;
+    box-shadow: 0 0 12px rgba(255, 51, 102, 0.4) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Активная страница (текущая) */
+.page-btn.active {
+    background: #ff3366 !important;
+    color: #ffffff !important;
+    border-color: #ff3366 !important;
+    box-shadow: 0 0 15px rgba(255, 51, 102, 0.6) !important;
+    cursor: default !important;
+    transform: none !important;
+}
+
+/* Отключенные кнопки (например, "Назад" на 1-й странице) */
+.page-btn:disabled {
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.2) !important;
+    cursor: not-allowed !important;
+    background: transparent !important;
+}
+
+/* Адаптив для телефонов */
+@media (max-width: 480px) {
+    .page-btn {
+        width: 38px !important;
+        height: 38px !important;
+        font-size: 1rem !important;
+    }
+}
+
+
+
+
+/* Выравнивание текста в карточке НАЗАД */
+.custom-back-card {
+    display: flex !important;
+    justify-content: center !important; /* По горизонтали в центр */
+    align-items: center !important;     /* По вертикали в центр */
+    background: #09090d !important;     /* Темный фон, чтобы не было прозрачной дыры */
+}
+
+/* Убираем лишние отступы у самого текста, если они есть */
+.custom-back-card .custom-cat-title {
+    margin: 0 !important;
+    text-align: center !important;
+}

@@ -12,12 +12,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         const responseData = await fetchCatalogStructure();
-        // Берем категории из ответа или пустой массив, если их нет
-        allCategories = responseData.categories || []; 
-        
-        // ПЕРЕДАЕМ ПЕРЕМЕННУЮ С ДАННЫМИ, А НЕ NULL
-        renderCategories(allCategories); 
-        
+        allCategories = responseData.categories || [];
+        renderCategories(null);
         prodContainer.innerHTML = '';
     } catch (error) {
         console.error('Ошибка при инициализации каталога:', error);
@@ -37,16 +33,13 @@ function renderCategories(parentId = null) {
     if (detailContainer) detailContainer.style.setProperty('display', 'none', 'important');
 
     const currentLevelCategories = allCategories.filter(cat => cat.parent_id === parentId);
-    
-    // 1. Создаем фрагмент
-    const fragment = document.createDocumentFragment();
+    catContainer.innerHTML = '';
 
     if (parentId === null) {
-        if (prodContainer) prodContainer.innerHTML = ''; 
-        if (paginationContainer) paginationContainer.innerHTML = '';
+        prodContainer.innerHTML = ''; 
+        if (paginationContainer) paginationContainer.innerHTML = ''; // Скрываем страницы на главной каталога
     }
 
-    // 2. Если есть кнопка "Назад", добавляем её во фрагмент, а не в DOM
     if (parentId !== null) {
         const backCard = document.createElement('div');
         backCard.className = 'custom-cat-card custom-back-card';
@@ -55,43 +48,42 @@ function renderCategories(parentId = null) {
             const currentParent = allCategories.find(cat => cat.id === parentId);
             renderCategories(currentParent ? currentParent.parent_id : null);
         });
-        fragment.appendChild(backCard); // Добавляем во фрагмент
+        catContainer.appendChild(backCard);
     }
 
-    // 3. Добавляем все карточки во фрагмент
     currentLevelCategories.forEach(category => {
-        const hasChildren = allCategories.some(cat => cat.parent_id === category.id);
-        const card = document.createElement('div');
-        card.className = 'custom-cat-card';
-        
-        const catImg = category.image_url || category.image || '';
-        if (catImg) {
-            card.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,0) 10%, rgba(0,0,0,0.85) 100%), url('${catImg}')`;
+    const hasChildren = allCategories.some(cat => cat.parent_id === category.id);
+    const card = document.createElement('div');
+    card.className = 'custom-cat-card';
+    
+    // Получаем картинку, чистим путь
+    let catImg = category.image_url || category.image || safePlaceholder;
+    if (catImg && !catImg.startsWith('http') && !catImg.startsWith('data:')) {
+        if (!catImg.startsWith('/')) catImg = '/' + catImg;
+    }
+
+    // ВАЖНО: Используем setProperty с !important
+    card.style.setProperty('background-image', `linear-gradient(180deg, rgba(0,0,0,0) 10%, rgba(0,0,0,0.85) 100%), url('${catImg}')`, 'important');
+    card.style.backgroundSize = 'cover';
+    card.style.backgroundPosition = 'center';
+
+    card.innerHTML = `
+        <div class="custom-cat-content">
+            <h2 class="custom-cat-title">${(category.name || category.title || 'Категория').toUpperCase()}</h2>
+            <button class="custom-cat-btn">${hasChildren ? 'Открыть' : 'Смотреть'}</button>
+        </div>
+    `;
+
+    card.addEventListener('click', async () => {
+        if (hasChildren) {
+            renderCategories(category.id);
         } else {
-            card.style.backgroundImage = `linear-gradient(180deg, rgba(0,0,0,0) 10%, rgba(0,0,0,0.85) 100%), url('${safePlaceholder}')`;
+            await renderCatalogProducts(category.id, 1);
         }
-
-        card.innerHTML = `
-            <div class="custom-cat-content">
-                <h2 class="custom-cat-title">${(category.name || category.title || 'Категория').toUpperCase()}</h2>
-                <button class="custom-cat-btn">${hasChildren ? 'Открыть' : 'Смотреть'}</button>
-            </div>
-        `;
-
-        card.addEventListener('click', async () => {
-            if (hasChildren) {
-                renderCategories(category.id);
-            } else {
-                await renderCatalogProducts(category.id, 1);
-            }
-        });
-
-        fragment.appendChild(card); // Добавляем во фрагмент
     });
 
-    // 4. Очищаем старый контент и ОДНИМ РАЗОМ вставляем весь фрагмент
-    catContainer.innerHTML = '';
-    catContainer.appendChild(fragment); 
+    catContainer.appendChild(card);
+});
 }
 
 // МОДЕРНИЗИРОВАННАЯ ФУНКЦИЯ ЗАГРУЗКИ ТОВАРОВ С ПАГИНАЦИЕЙ
@@ -119,7 +111,6 @@ async function renderCatalogProducts(categoryId = null, page = 1) {
         // Отправляем динамические параметры страницы на бэкенд
         const responseData = await fetchProducts(categoryId, page, itemsPerPage);
         const products = responseData.items || responseData.products || (Array.isArray(responseData) ? responseData : []);
-
         container.innerHTML = '';
 
         if (products.length === 0) {
@@ -166,17 +157,32 @@ async function renderCatalogProducts(categoryId = null, page = 1) {
 
         // ЛОГИКА ГЕНЕРАЦИИ КНОПОК СТРАНИЦ
         // Забираем total_pages или общее количество записей из ответа FastAPI (в зависимости от твоего пагинатора)
-        const totalItems = responseData.total || products.length;
-        const totalPages = responseData.pages || responseData.total_pages || Math.ceil(totalItems / itemsPerPage);
-
-        if (totalPages > 1) {
-            renderPaginationControls(paginationContainer, totalPages, page);
-        }
-
-    } catch (error) {
-        console.error('Ошибка при загрузке товаров:', error);
-        container.innerHTML = '<div class="catalog-error">Ошибка загрузки товаров</div>';
+        let totalPages = 1;
+    if (responseData.meta && responseData.meta.total_pages) {
+        totalPages = responseData.meta.total_pages;
     }
+
+    console.log("--- ДЕБАГ ПАГИНАЦИИ ---");
+    console.log("1. Всего страниц получено:", totalPages);
+    console.log("2. Контейнер пагинации найден:", !!paginationContainer);
+
+    if (totalPages > 1) {
+        console.log("3. Условие (totalPages > 1) пройдено!");
+        
+        // Проверяем, существует ли вообще функция отрисовки кнопок
+        if (typeof renderPaginationControls === 'function') {
+            console.log("4. Запускаем renderPaginationControls...");
+            renderPaginationControls(paginationContainer, totalPages, page);
+        } else {
+            console.error("🚨 ОШИБКА: Функция renderPaginationControls не существует! Ты точно скопировал её в свой JS-файл?");
+        }
+    } else {
+        console.log("3. Кнопки не рисуем, так как страниц <= 1");
+    }
+
+} catch (error) {
+    console.error('Ошибка при загрузке товаров:', error);
+}
 }
 
 // ФУНКЦИЯ РИСОВАНИЯ СТРАНИЦ КАТАЛОГА
@@ -354,4 +360,53 @@ function showProductDetail(product) {
     detailContainer.querySelector('.detail-buy-btn').addEventListener('click', () => {
         alert(`Заказ на товар "${product.title || 'Товар'}" успешно сформирован!`);
     });
+}
+
+
+
+
+
+
+
+// ФУНКЦИЯ ОТРИСОВКИ КНОПОК ПАГИНАЦИИ В КАТАЛОГЕ
+function renderPaginationControls(container, totalPages, currentPage) {
+    // Очищаем контейнер перед новой отрисовкой
+    container.innerHTML = '';
+
+    // Кнопка НАЗАД (Стрелочка влево)
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'page-btn nav-btn';
+    prevBtn.innerHTML = '&#10094;'; // Юникод стрелочки <
+    prevBtn.disabled = currentPage === 1; // Отключаем на первой странице
+    prevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            renderCatalogProducts(currentCategoryId, currentPage - 1);
+        }
+    });
+    container.appendChild(prevBtn);
+
+    // Кнопки с номерами страниц
+    for (let i = 1; i <= totalPages; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+        pageBtn.textContent = i;
+        pageBtn.addEventListener('click', () => {
+            if (i !== currentPage) {
+                renderCatalogProducts(currentCategoryId, i);
+            }
+        });
+        container.appendChild(pageBtn);
+    }
+
+    // Кнопка ВПЕРЕД (Стрелочка вправо)
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'page-btn nav-btn';
+    nextBtn.innerHTML = '&#10095;'; // Юникод стрелочки >
+    nextBtn.disabled = currentPage === totalPages; // Отключаем на последней странице
+    nextBtn.addEventListener('click', () => {
+        if (currentPage < totalPages) {
+            renderCatalogProducts(currentCategoryId, currentPage + 1);
+        }
+    });
+    container.appendChild(nextBtn);
 }
