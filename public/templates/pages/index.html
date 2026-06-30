@@ -5,7 +5,38 @@
         <div id="products-container"></div>
 
         <div id="product-detail-container" class="custom-hidden"></div>
+        <script>
+        document.addEventListener('click', function(e) {
+        const modal = document.getElementById('order-modal');
+
+        // 1. Открытие (нажали на кнопку "ЗАКАЗАТЬ")
+        if (e.target.matches('.detail-buy-btn')) {
+            modal.classList.add('is-visible');
+        }
+
+        // 2. Закрытие (нажали на крестик ИЛИ на темный фон)
+        if (e.target.id === 'close-modal-btn' || e.target.id === 'order-modal') {
+            modal.classList.remove('is-visible');
+        }
+        });
+        </script>
 
         <script src="/static/js/get_api.js"></script>
         <script src="/static/js/constructor.js"></script>
+        <div id="order-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+        <h3>Оформить заказ</h3>
+        <p>Выберите удобный способ связи:</p>
+        <div class="modal-actions">
+            <a href="#" target="_blank" class="modal-btn wa" id="modal-wa-btn">WhatsApp</a>
+            
+            <a href="https://instagram.com/твой_профиль" target="_blank" class="modal-btn ig">Instagram</a>
+            
+            <a href="tel:+77777777777" class="modal-btn call">Позвонить</a>
+        </div>
+        <button class="close-modal" id="close-modal-btn">Закрыть</button>
+        </div>
+        </div>
+
+
 {% endblock %}

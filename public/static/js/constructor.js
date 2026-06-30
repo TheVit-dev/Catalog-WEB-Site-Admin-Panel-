@@ -229,6 +229,11 @@ function showProductDetail(product) {
     const detailContainer = document.getElementById('product-detail-container');
     const paginationContainer = document.getElementById('pagination-container') || document.querySelector('.custom-pagination');
 
+    
+
+
+    
+
     if (catContainer) catContainer.style.setProperty('display', 'none', 'important');
     if (prodContainer) prodContainer.style.setProperty('display', 'none', 'important');
     if (paginationContainer) paginationContainer.style.setProperty('display', 'none', 'important');
@@ -276,10 +281,12 @@ function showProductDetail(product) {
                 </div>
                 
                 <button class="detail-buy-btn">ЗАКАЗАТЬ</button>
+                
             </div>
         </div>
     `;
 
+    
     const mainImgWindow = document.getElementById('active-detail-img');
     const thumbWrappers = detailContainer.querySelectorAll('.thumb-wrapper');
     const prevBtn = document.getElementById('gallery-prev-btn');
@@ -357,9 +364,51 @@ function showProductDetail(product) {
         if (paginationContainer) paginationContainer.style.removeProperty('display');
     });
 
-    detailContainer.querySelector('.detail-buy-btn').addEventListener('click', () => {
-        alert(`Заказ на товар "${product.title || 'Товар'}" успешно сформирован!`);
+    // === ЖЕЛЕЗОБЕТОННАЯ ЛОГИКА ЗАКАЗА ===
+    const buyBtn = detailContainer.querySelector('.detail-buy-btn');
+    
+    if (buyBtn) {
+        // Убираем старые обработчики (если они были)
+        const newBuyBtn = buyBtn.cloneNode(true);
+        buyBtn.parentNode.replaceChild(newBuyBtn, buyBtn);
+
+        newBuyBtn.addEventListener('click', () => {
+            const modal = document.getElementById('order-modal');
+            const waBtn = document.getElementById('modal-wa-btn');
+            
+            if (modal) {
+                // Подставляем текст сообщения
+                const productName = product.title || product.name || 'Товар';
+                const waText = encodeURIComponent(`Здравствуйте! Хочу заказать: "${productName}"`);
+                
+                if (waBtn) {
+                    waBtn.href = `https://wa.me/77777777777?text=${waText}`; // Твой номер
+                }
+
+                // ПРИНУДИТЕЛЬНОЕ отображение
+                modal.style.setProperty('display', 'flex', 'important');
+                console.log("Модальное окно принудительно открыто");
+            } else {
+                console.error("Критическая ошибка: модальное окно #order-modal не найдено в DOM!");
+            }
+        });
+    } else {
+        console.error("Ошибка: кнопка .detail-buy-btn не найдена в контейнере!");
+    }
+
+    // Глобальный слушатель для закрытия модалки
+    document.addEventListener('click', (e) => {
+    const modal = document.getElementById('order-modal');
+    
+    // Если нажали на кнопку "Закрыть" ИЛИ на фон (сам overlay)
+    if (e.target.id === 'close-modal-btn' || e.target.id === 'order-modal') {
+        modal.classList.remove('is-visible');
+    }
     });
+
+
+    
+
 }
 
 
